@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 272" role="img" aria-label="Clavier vers Arduino vers synthé, avec les contrôles qui s'ajoutent sous l'Arduino"><style>text{fill:#141a26;font-family:Helvetica,Arial,sans-serif;font-size:14px}.m{fill:#5d6677;font-size:12.5px}.b{font-weight:700}.card{fill:#e3e8f0;stroke:#d5dbe5;stroke-width:1.5}.ln{stroke:#5d6677;stroke-width:1.5;fill:none}.pcbfill{fill:#14634a}.wt{fill:#fff!important}</style><rect width="100%" height="100%" rx="16" fill="#f4f6fa"/>
+  <rect x="20" y="60" width="170" height="100" rx="14" class="card"/>
+  <text x="105" y="84" text-anchor="middle" class="b">Clavier MIDI</text>
+  <g class="ln"><path d="M54 100V156M88 100V156M122 100V156M156 100V156"/></g>
+  <g style="fill:#141a26"><rect x="45" y="100" width="18" height="36" rx="3"/><rect x="79" y="100" width="18" height="36" rx="3"/><rect x="147" y="100" width="18" height="36" rx="3"/></g>
+  <path d="M190 110H292" class="ln" style="stroke:#d6364a;stroke-width:3"/><path d="M298 110l-12-6v12z" style="fill:#d6364a"/>
+  <text x="243" y="98" text-anchor="middle" class="m">MIDI IN</text>
+  <rect x="300" y="40" width="160" height="140" rx="16" class="pcbfill"/>
+  <text class="wt b" x="380" y="98" text-anchor="middle" style="font-size:17px">Arduino Uno</text>
+  <text class="wt" x="380" y="122" text-anchor="middle">recopie le clavier</text>
+  <text class="wt" x="380" y="142" text-anchor="middle">+ ajoute les contrôles</text>
+  <path d="M460 110H562" class="ln" style="stroke:#d6364a;stroke-width:3"/><path d="M568 110l-12-6v12z" style="fill:#d6364a"/>
+  <text x="513" y="98" text-anchor="middle" class="m">MIDI OUT</text>
+  <rect x="570" y="60" width="170" height="100" rx="14" class="card"/>
+  <text x="655" y="84" text-anchor="middle" class="b">Synthé / interface</text>
+  <g style="fill:#e07b00"><circle cx="605" cy="112" r="10"/><circle cx="645" cy="112" r="10"/><circle cx="685" cy="112" r="10"/></g>
+  <rect x="592" y="134" width="126" height="14" rx="4" class="card"/>
+  <path d="M380 180V196M240 196H540M240 196V210M340 196V210M440 196V210M540 196V210" class="ln"/>
+  <circle cx="240" cy="228" r="16" fill="#2a64e0"/><path d="M240 228l7-9" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <rect x="324" y="212" width="32" height="32" rx="8" fill="#0c8f7e"/>
+  <circle cx="440" cy="228" r="16" fill="#7b45c4"/><circle cx="440" cy="228" r="7" fill="#f4f6fa"/>
+  <circle cx="540" cy="228" r="16" fill="#e07b00"/><circle cx="540" cy="228" r="7" fill="#f4f6fa"/>
+  <g class="m" text-anchor="middle"><text x="240" y="262">4 potentiomètres</text><text x="340" y="262">8 boutons</text><text x="440" y="262">encodeur</text><text x="540" y="262">joystick</text></g>
+</svg>

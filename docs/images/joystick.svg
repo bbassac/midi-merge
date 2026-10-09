@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-label="Joystick : gauche -2 demi-tons, droite +2 demi-tons, haut modulation 0 à 127"><style>text{fill:#141a26;font-family:Helvetica,Arial,sans-serif;font-size:14px}.m{fill:#5d6677;font-size:12.5px}.b{font-weight:700}.card{fill:#e3e8f0;stroke:#d5dbe5;stroke-width:1.5}.ln{stroke:#5d6677;stroke-width:1.5;fill:none}.pcbfill{fill:#14634a}.wt{fill:#fff!important}</style><rect width="100%" height="100%" rx="16" fill="#f4f6fa"/>
+  <circle cx="320" cy="160" r="90" class="card"/>
+  <circle cx="320" cy="160" r="20" fill="none" stroke="#5d6677" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="320" cy="160" r="30" fill="#e07b00" opacity=".92"/>
+  <text x="320" y="165" text-anchor="middle" class="b" style="fill:#08110f">0</text>
+  <path d="M214 160H140" class="ln" style="stroke:#e07b00;stroke-width:4"/><path d="M132 160l14-8v16z" style="fill:#e07b00"/>
+  <text x="124" y="148" text-anchor="end" class="b">Pitch bend</text><text x="124" y="170" text-anchor="end">−2 demi-tons</text>
+  <path d="M426 160H500" class="ln" style="stroke:#e07b00;stroke-width:4"/><path d="M508 160l-14-8v16z" style="fill:#e07b00"/>
+  <text x="516" y="148" class="b">Pitch bend</text><text x="516" y="170">+2 demi-tons</text>
+  <path d="M320 66V30" class="ln" style="stroke:#7b45c4;stroke-width:4"/><path d="M320 22l-8 14h16z" style="fill:#7b45c4"/>
+  <text x="336" y="40" class="b">Modulation</text><text x="336" y="58">CC1 : 0 → 127</text>
+  <path d="M320 256V272" class="ln" style="stroke-dasharray:4 4"/>
+  <text x="336" y="278" class="m">rien vers le bas</text>
+  <text x="320" y="204" text-anchor="middle" class="m" style="fill:#5d6677">zone morte</text>
+</svg>

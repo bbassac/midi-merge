@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 292" role="img" aria-label="Brochage de l'Arduino Uno">
+<style>text{fill:#141a26;font-family:Helvetica,Arial,sans-serif;font-size:14px}.m{fill:#5d6677;font-size:12.5px}.b{font-weight:700}.card{fill:#e3e8f0;stroke:#d5dbe5;stroke-width:1.5}.ln{stroke:#5d6677;stroke-width:1.5;fill:none}.pcbfill{fill:#14634a}.wt{fill:#fff!important}</style>
+<rect width="100%" height="100%" rx="16" fill="#f4f6fa"/>
+<rect x="0" y="0" width="760" height="236" rx="18" fill="#14634a"/>
+<text x="24" y="34" class="wt b" style="font-size:18px">Arduino Uno</text>
+<text x="24" y="58" class="wt" style="font-size:13px;opacity:.8">Broches numériques</text>
+<text x="24" y="152" class="wt" style="font-size:13px;opacity:.8">Broches analogiques</text>
+<rect x="19" y="68" width="46" height="60" rx="8" fill="#d6364a"/>
+<text x="42" y="95" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">0</text>
+<text x="42" y="115" text-anchor="middle" style="fill:#fff;font-size:12px">RX</text>
+<rect x="71" y="68" width="46" height="60" rx="8" fill="#d6364a"/>
+<text x="94" y="95" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">1</text>
+<text x="94" y="115" text-anchor="middle" style="fill:#fff;font-size:12px">TX</text>
+<rect x="123" y="68" width="46" height="60" rx="8" fill="#7b45c4"/>
+<text x="146" y="95" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">2</text>
+<text x="146" y="115" text-anchor="middle" style="fill:#fff;font-size:12px">A</text>
+<rect x="175" y="68" width="46" height="60" rx="8" fill="#7b45c4"/>
+<text x="198" y="95" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">3</text>
+<text x="198" y="115" text-anchor="middle" style="fill:#fff;font-size:12px">B</text>
+<rect x="227" y="68" width="46" height="60" rx="8" fill="#7b45c4"/>
+<text x="250" y="95" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">4</text>
+<text x="250" y="115" text-anchor="middle" style="fill:#fff;font-size:12px">SW</text>
+<rect x="279" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="302" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">5</text>
+<text x="302" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B1</text>
+<rect x="331" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="354" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">6</text>
+<text x="354" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B2</text>
+<rect x="383" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="406" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">7</text>
+<text x="406" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B3</text>
+<rect x="435" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="458" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">8</text>
+<text x="458" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B4</text>
+<rect x="487" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="510" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">9</text>
+<text x="510" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B5</text>
+<rect x="539" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="562" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">10</text>
+<text x="562" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B6</text>
+<rect x="591" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="614" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">11</text>
+<text x="614" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B7</text>
+<rect x="643" y="68" width="46" height="60" rx="8" fill="#0c8f7e"/>
+<text x="666" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">12</text>
+<text x="666" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">B8</text>
+<rect x="695" y="68" width="46" height="60" rx="8" fill="#e07b00"/>
+<text x="718" y="95" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">13</text>
+<text x="718" y="115" text-anchor="middle" style="fill:#08110f;font-size:12px">SW</text>
+<rect x="19" y="162" width="46" height="60" rx="8" fill="#2a64e0"/>
+<text x="42" y="189" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">A0</text>
+<text x="42" y="209" text-anchor="middle" style="fill:#fff;font-size:12px">P1</text>
+<rect x="71" y="162" width="46" height="60" rx="8" fill="#2a64e0"/>
+<text x="94" y="189" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">A1</text>
+<text x="94" y="209" text-anchor="middle" style="fill:#fff;font-size:12px">P2</text>
+<rect x="123" y="162" width="46" height="60" rx="8" fill="#2a64e0"/>
+<text x="146" y="189" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">A2</text>
+<text x="146" y="209" text-anchor="middle" style="fill:#fff;font-size:12px">P3</text>
+<rect x="175" y="162" width="46" height="60" rx="8" fill="#2a64e0"/>
+<text x="198" y="189" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:16px">A3</text>
+<text x="198" y="209" text-anchor="middle" style="fill:#fff;font-size:12px">P4</text>
+<rect x="227" y="162" width="46" height="60" rx="8" fill="#e07b00"/>
+<text x="250" y="189" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">A4</text>
+<text x="250" y="209" text-anchor="middle" style="fill:#08110f;font-size:12px">X</text>
+<rect x="279" y="162" width="46" height="60" rx="8" fill="#e07b00"/>
+<text x="302" y="189" text-anchor="middle" style="fill:#08110f;font-weight:700;font-size:16px">A5</text>
+<text x="302" y="209" text-anchor="middle" style="fill:#08110f;font-size:12px">Y</text>
+<rect x="24" y="258" width="14" height="14" rx="3" fill="#d6364a"/>
+<text x="46" y="270" style="font-size:13px">Shield MIDI</text>
+<rect x="151" y="258" width="14" height="14" rx="3" fill="#7b45c4"/>
+<text x="173" y="270" style="font-size:13px">Encodeur</text>
+<rect x="256" y="258" width="14" height="14" rx="3" fill="#0c8f7e"/>
+<text x="278" y="270" style="font-size:13px">Boutons</text>
+<rect x="353" y="258" width="14" height="14" rx="3" fill="#e07b00"/>
+<text x="375" y="270" style="font-size:13px">Joystick</text>
+<rect x="458" y="258" width="14" height="14" rx="3" fill="#2a64e0"/>
+<text x="480" y="270" style="font-size:13px">Potentiomètres</text>
+</svg>
