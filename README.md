@@ -11,14 +11,12 @@ Documentation complète du projet (version logicielle **v3**).
 ## Contenu du dépôt
 
 ```
-midi-merge/
-├── README.md                          ← ce document
+
+├── README.md                    ← ce document
 ├── docs/
-│   ├── guide.html                     ← version illustrée (à ouvrir dans un navigateur)
-│   └── images/                        ← schémas SVG (principe, brochage, joystick, prise DIN)
-└── firmware/
-    └── midi_merge_v3/
-        └── midi_merge_v3.ino          ← sketch Arduino (v3)
+│   ├── guide.html               ← version illustrée (à ouvrir dans un navigateur)
+│   └── images/                  ← schémas SVG (principe, brochage, joystick, prise DIN)
+└── midi_merge.ino               ← sketch Arduino (v3)
 ```
 
 La version illustrée `docs/guide.html` est un fichier unique, sans dépendance : elle peut aussi être publiée avec GitHub Pages.
