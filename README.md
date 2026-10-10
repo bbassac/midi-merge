@@ -1,6 +1,9 @@
 # Contrôleur MIDI « merge » sur Arduino Uno
 
-<p align="center"><img src="docs/images/prise-din.png" width="300" alt="Prise DIN 5 broches"></p>
+<p align="center">
+  <img src="docs/images/prise-din.png" width="300" alt="Prise DIN 5 broches">
+  <img src="docs/images/midi-shield.jpg" width="300" alt="midi Shield">
+</p>
 
 Documentation complète du projet (version logicielle **v3**).
 
@@ -107,6 +110,9 @@ Les 20 broches de l'Uno sont toutes utilisées.
 | **A0 à A3** | Potentiomètres 1 à 4 | Curseur (broche centrale) |
 | **A4** | Joystick | Axe X (VRx) |
 | **A5** | Joystick | Axe Y (VRy) |
+
+Brochage du midi shield : 
+![Borchage du midi shield](docs/images/midi-shield%20Pinout.png)
 
 ### 3.3 Câblage composant par composant
 
