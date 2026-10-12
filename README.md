@@ -4,6 +4,10 @@
   <img src="docs/images/prise-din.png" width="300" alt="Prise DIN 5 broches">
   <img src="docs/images/midi-shield.jpg" width="300" alt="midi Shield">
 </p>
+<p align="center">
+  <img src="docs/images/connector_view.jpg" width="300" alt="Prise DIN 5 broches">
+  <img src="docs/images/component_view.jpg" width="300" alt="midi Shield">
+</p>
 
 Documentation complète du projet (version logicielle **v3**).
 
