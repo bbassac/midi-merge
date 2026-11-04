@@ -6,6 +6,7 @@
 
 // ---------- Réglages de l'instance MIDI ----------
 struct MySettings : public midi::DefaultSettings {
+  static const long BaudRate = 31250;  // Débit standard du MIDI DIN
   static const bool Use1ByteParsing = false;                  // lit TOUT le tampon à chaque read()
   static const bool HandleNullVelocityNoteOnAsNoteOff = false; // ne touche pas aux Note On vélocité 0
   static const bool UseRunningStatus = true;                  // moins d'octets envoyés, sortie plus fluide
@@ -75,7 +76,7 @@ void loop() {
 
 void readPot(uint8_t i) {
   int raw = analogRead(POT_PINS[i]);
-  if (abs(raw - potRaw[i]) < 4) return;            // filtre le bruit
+  if (abs(raw - potRaw[i]) < 15) return;            // filtre le bruit
   potRaw[i] = raw;
   uint8_t v = raw >> 3;
   if (v != potVal[i]) { potVal[i] = v; MIDI.sendControlChange(POT_CC[i], v, channel); }
