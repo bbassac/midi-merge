@@ -22,11 +22,14 @@ const uint8_t BTN_PINS[8] = {5, 6, 7, 8, 9, 10, 11, 12};
 
 // ---------- CC ----------
 const uint8_t POT_CC[4] = {20, 21, 22, 23};
-const uint8_t BTN_CC[8] = {102, 103, 104, 105, 106, 107, 108, 109};
 const uint8_t JOY_Y_CC = 1;        // modulation
 const uint8_t JOY_SW_CC = 110;
 const uint8_t ENC_CC = 30, ENC_STEP = 2;
-const bool BUTTONS_TOGGLE = false;
+const int8_t  ENC_TRANSITIONS = 4;   // transitions par cran : 4 (le plus courant), sinon essayer 2 ou 1
+
+// ---------- Boutons = notes ----------
+const uint8_t BTN_NOTE[8] = {60, 62, 64, 65, 67, 69, 71, 72};  // do ré mi fa sol la si do (60 = do central)
+const uint8_t BTN_VELOCITY = 100;                              // vélocité des notes (1-127)
 
 // ---------- Joystick ----------
 const int  JOY_DEADZONE = 25;      // zone morte autour du centre (sur 0-1023)
@@ -38,7 +41,9 @@ uint8_t channel = 1;               // suit le canal du clavier
 // ---------- États ----------
 int16_t potRaw[4]; uint8_t potVal[4];
 int16_t joyXCenter, joyYCenter, joyXLast = 0, joyYLast = 0;
-uint8_t btnState[8], btnOut[8], joySwState = HIGH, encSwState = HIGH, encPrev;
+uint8_t btnState[8], btnChan[8], joySwState = HIGH, encSwState = HIGH;
+volatile uint8_t encPrev;
+volatile int8_t encAcc = 0;   // transitions cumulées par l'interruption
 unsigned long lastBtn[10];
 int16_t encValue = 64;
 uint8_t step = 0;
@@ -51,9 +56,11 @@ void setup() {
   pinMode(JOY_SW, INPUT_PULLUP);
   pinMode(ENC_A, INPUT_PULLUP); pinMode(ENC_B, INPUT_PULLUP); pinMode(ENC_SW, INPUT_PULLUP);
   encPrev = (digitalRead(ENC_A) << 1) | digitalRead(ENC_B);
-  for (uint8_t i = 0; i < 4; i++) { potRaw[i] = analogRead(POT_PINS[i]); potVal[i] = potRaw[i] >> 3; }
-  joyXCenter = analogRead(JOY_X);   // calibrage : joystick au repos au démarrage
-  joyYCenter = analogRead(JOY_Y);
+  attachInterrupt(digitalPinToInterrupt(ENC_A), encoderISR, CHANGE);   // D2 = INT0
+  attachInterrupt(digitalPinToInterrupt(ENC_B), encoderISR, CHANGE);   // D3 = INT1
+  for (uint8_t i = 0; i < 4; i++) { potRaw[i] = readAnalog(POT_PINS[i]); potVal[i] = potRaw[i] >> 3; }
+  joyXCenter = readAnalog(JOY_X);   // calibrage : joystick au repos au démarrage
+  joyYCenter = readAnalog(JOY_Y);
 
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
@@ -74,8 +81,16 @@ void loop() {
   readButtons();
 }
 
+// Lecture analogique anti-diaphonie : après un changement de broche, la 1re mesure
+// est jetée (le multiplexeur de l'Uno garde une charge de la voie précédente, ce qui
+// fait "fuir" un potentiomètre sur son voisin), puis moyenne de 2 mesures.
+int readAnalog(uint8_t pin) {
+  analogRead(pin);                                   // mesure jetée
+  return (analogRead(pin) + analogRead(pin) + 1) >> 1;
+}
+
 void readPot(uint8_t i) {
-  int raw = analogRead(POT_PINS[i]);
+  int raw = readAnalog(POT_PINS[i]);
   if (abs(raw - potRaw[i]) < 15) return;            // filtre le bruit
   potRaw[i] = raw;
   uint8_t v = raw >> 3;
@@ -85,7 +100,7 @@ void readPot(uint8_t i) {
 // X : pitch bend progressif, 0 au centre, -8192 à gauche, +8191 à droite
 // (= -2 / +2 demi-tons si le synthé est réglé sur la plage standard de ±2)
 void readJoyX() {
-  int dx = analogRead(JOY_X) - joyXCenter;
+  int dx = readAnalog(JOY_X) - joyXCenter;
   int bend = 0;
   if (dx > JOY_DEADZONE)
     bend = map(dx - JOY_DEADZONE, 0, (1023 - joyXCenter) - JOY_DEADZONE - JOY_MARGIN, 0, 8191);
@@ -101,7 +116,7 @@ void readJoyX() {
 
 // Y : modulation (CC1) entre le centre (0) et le haut (127), rien vers le bas
 void readJoyY() {
-  int raw = analogRead(JOY_Y);
+  int raw = readAnalog(JOY_Y);
   int dy = INVERT_Y ? raw - joyYCenter : joyYCenter - raw;
   int span = (INVERT_Y ? 1023 - joyYCenter : joyYCenter) - JOY_DEADZONE - JOY_MARGIN;
   int y = 0;
@@ -118,15 +133,23 @@ void readSwitch(uint8_t pin, uint8_t &state, uint8_t idx, uint8_t cc) {
   }
 }
 
-void readEncoder() {
+// Décodage de l'encodeur par interruption : chaque changement de CLK ou DT est
+// pris en compte immédiatement, même pendant une lecture analogique ou une
+// émission MIDI. (En scrutation, une rotation rapide perdait des transitions.)
+void encoderISR() {
   static const int8_t table[16] = {0,-1,1,0, 1,0,0,-1, -1,0,0,1, 0,1,-1,0};
-  static int8_t acc = 0;
   uint8_t cur = (digitalRead(ENC_A) << 1) | digitalRead(ENC_B);
-  acc += table[(encPrev << 2) | cur];
+  encAcc += table[(encPrev << 2) | cur];
   encPrev = cur;
-  if (acc >= 4 || acc <= -4) {
-    encValue = constrain(encValue + (acc > 0 ? ENC_STEP : -ENC_STEP), 0, 127);
-    acc = 0;
+}
+
+void readEncoder() {
+  noInterrupts();
+  int8_t steps = encAcc / ENC_TRANSITIONS;       // crans complets accumulés (signe = sens)
+  encAcc -= steps * ENC_TRANSITIONS;
+  interrupts();
+  if (steps != 0) {
+    encValue = constrain(encValue + steps * ENC_STEP, 0, 127);
     MIDI.sendControlChange(ENC_CC, encValue, channel);
   }
   uint8_t s = digitalRead(ENC_SW);
@@ -136,15 +159,19 @@ void readEncoder() {
   }
 }
 
+// Boutons : Note On à l'appui, Note Off au relâchement.
+// Le canal du Note On est mémorisé pour envoyer le Note Off sur le même canal,
+// même si le clavier change de canal entre-temps (évite les notes bloquées).
 void readButtons() {
   for (uint8_t i = 0; i < 8; i++) {
     uint8_t s = digitalRead(BTN_PINS[i]);
     if (s == btnState[i] || millis() - lastBtn[i] <= 20) continue;
     btnState[i] = s; lastBtn[i] = millis();
-    if (BUTTONS_TOGGLE) {
-      if (s == LOW) { btnOut[i] = !btnOut[i]; MIDI.sendControlChange(BTN_CC[i], btnOut[i] ? 127 : 0, channel); }
+    if (s == LOW) {
+      btnChan[i] = channel;
+      MIDI.sendNoteOn(BTN_NOTE[i], BTN_VELOCITY, btnChan[i]);
     } else {
-      MIDI.sendControlChange(BTN_CC[i], s == LOW ? 127 : 0, channel);
+      MIDI.sendNoteOff(BTN_NOTE[i], 0, btnChan[i]);
     }
   }
 }
