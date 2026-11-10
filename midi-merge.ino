@@ -12,8 +12,8 @@
 //    Joystick Y (A5) ............. CC 1 (modulation), centre -> haut uniquement
 //    Joystick clic (D13) ......... CC 110 (127 appuyé / 0 relâché)
 //    Encodeur CLK/DT (D2/D3) ..... CC 30, valeur absolue 0-127
-//    Encodeur clic (D4) .......... remet la valeur de l'encodeur à 64
-//    8 boutons (D5-D12) .......... notes : Note On à l'appui, Note Off au relâchement
+//    Encodeur clic (D4) .......... change de mode des boutons (cycle défini dans chords.h)
+//    8 boutons (D5-D12) .......... notes ou accords du mode courant (chords.h) : Note On à l'appui, Note Off au relâchement
 //
 //  Contraintes matérielles à garder en tête :
 //    - D0/D1 appartiennent au MIDI (port série matériel) : rien d'autre dessus,
@@ -22,6 +22,7 @@
 // =============================================================================
 
 #include <MIDI.h>
+#include "chords.h"   // modes des boutons : notes seules, accords... (voir ce fichier pour en ajouter)
 
 // ---------- Réglages de l'instance MIDI ----------
 // La bibliothèque n'a pas d'option "ne rien vérifier" : ces réglages sont les plus
@@ -51,8 +52,8 @@ const uint8_t JOY_SW_CC = 110;
 const uint8_t ENC_CC = 30, ENC_STEP = 2;   // ENC_STEP : valeur ajoutée par cran
 const int8_t  ENC_TRANSITIONS = 4;   // transitions CLK/DT par cran : 4 (le plus courant), sinon essayer 2 ou 1 si la valeur bouge trop peu ou trop vite
 
-// ---------- Boutons = notes ----------
-const uint8_t BTN_NOTE[8] = {60, 62, 64, 65, 67, 69, 71, 72};  // do ré mi fa sol la si do (60 = do central)
+// ---------- Boutons : notes ou accords ----------
+// Les notes de chaque bouton sont définies, mode par mode, dans chords.h.
 const uint8_t BTN_VELOCITY = 100;                              // vélocité fixe : les boutons n'ont pas de capteur de force (1-127)
 
 // ---------- Potentiomètres ----------
@@ -73,14 +74,19 @@ int16_t potRaw[4]; uint8_t potVal[4];   // potRaw : dernière mesure retenue (0-
 // joyXCenter/joyYCenter : position de repos mesurée au démarrage (pas de calibrage fixe).
 // joyXLast : dernier pitch bend envoyé (-8192..8191) ; joyYLast : dernier CC de modulation envoyé (0..127).
 int16_t joyXCenter, joyYCenter, joyXLast = 0, joyYLast = 0;
-// btnState : dernier état lu (HIGH = relâché, car pull-up) ; btnChan : canal du Note On en cours, pour y renvoyer le Note Off.
-uint8_t btnState[8], btnChan[8], joySwState = HIGH, encSwState = HIGH;
+// btnState : dernier état lu (HIGH = relâché, car pull-up) ; btnChan : canal du Note On en cours, pour y renvoyer le Note Off ;
+// btnMode : mode actif quand le bouton a été appuyé, pour éteindre exactement les notes qu'il a allumées.
+uint8_t btnState[8], btnChan[8], btnMode[8], joySwState = HIGH, encSwState = HIGH;
+uint8_t currentMode = 0;      // mode des boutons (index dans MODES de chords.h), change au clic de l'encodeur
+// Nombre de boutons qui tiennent chaque note : plusieurs accords peuvent partager une note (ex. do 60) ;
+// le Note Off n'est envoyé que lorsque le dernier bouton qui la tient est relâché.
+uint8_t noteCount[128];
 // Partagés avec l'interruption de l'encodeur : "volatile" oblige le compilateur à relire la mémoire à chaque accès.
 volatile uint8_t encPrev;      // dernier état (CLK<<1 | DT) vu par l'interruption
 volatile int8_t encAcc = 0;   // transitions cumulées par l'interruption, consommées par readEncoder()
 // Horodatage du dernier changement pour l'anti-rebond : indices 0-7 = boutons, 8 = clic joystick, 9 = clic encodeur.
 unsigned long lastBtn[10];
-int16_t encValue = 64;        // valeur courante de l'encodeur (0-127), partagée entre rotation et clic
+int16_t encValue = 64;        // valeur courante de l'encodeur (0-127)
 uint8_t step = 0;             // voie analogique lue au prochain tour de loop() (0-5)
 
 // Appelés par la bibliothèque pour chaque note reçue du clavier (jamais pour nos propres envois).
@@ -221,17 +227,20 @@ void readEncoder() {
     encValue = constrain(encValue + steps * ENC_STEP, 0, 127);   // valeur absolue, bornée (pas de débordement)
     MIDI.sendControlChange(ENC_CC, encValue, channel);
   }
-  // Clic : remet la valeur au milieu et le signale au synthé.
+  // Clic : passe au mode suivant des boutons (cycle, puis retour au mode 0).
+  // Les boutons déjà enfoncés gardent leur ancien mode jusqu'au relâchement (voir btnMode).
   uint8_t s = digitalRead(ENC_SW);
   if (s != encSwState && millis() - lastBtn[9] > 20) {
     encSwState = s; lastBtn[9] = millis();
-    if (s == LOW) { encValue = 64; MIDI.sendControlChange(ENC_CC, encValue, channel); }
+    if (s == LOW) currentMode = (currentMode + 1) % MODE_COUNT;
   }
 }
 
-// Boutons : Note On à l'appui, Note Off au relâchement.
-// Le canal du Note On est mémorisé pour envoyer le Note Off sur le même canal,
-// même si le clavier change de canal entre-temps (évite les notes bloquées).
+// Boutons : jouent les notes du mode courant (chords.h), seules ou en accord.
+// Le mode et le canal sont mémorisés à l'appui : le relâchement éteint exactement
+// les notes allumées, même si le mode ou le canal du clavier ont changé entre-temps
+// (évite les notes bloquées). Limite : si deux boutons tenus sur des canaux différents
+// partagent une même note, le Note Off part sur le canal du dernier relâché.
 void readButtons() {
   for (uint8_t i = 0; i < 8; i++) {
     uint8_t s = digitalRead(BTN_PINS[i]);
@@ -240,9 +249,18 @@ void readButtons() {
     btnState[i] = s; lastBtn[i] = millis();
     if (s == LOW) {                                  // appui (pull-up : LOW = appuyé)
       btnChan[i] = channel;
-      MIDI.sendNoteOn(BTN_NOTE[i], BTN_VELOCITY, btnChan[i]);
+      btnMode[i] = currentMode;
+      for (uint8_t k = 0; k < MAX_NOTES; k++) {
+        uint8_t n = pgm_read_byte(&MODES[btnMode[i]][i][k]);
+        if (n == 0 || n > 127) break;                // 0 = fin de liste
+        if (noteCount[n]++ == 0) MIDI.sendNoteOn(n, BTN_VELOCITY, btnChan[i]);   // 1re fois que la note est tenue
+      }
     } else {                                         // relâchement
-      MIDI.sendNoteOff(BTN_NOTE[i], 0, btnChan[i]);
+      for (uint8_t k = 0; k < MAX_NOTES; k++) {
+        uint8_t n = pgm_read_byte(&MODES[btnMode[i]][i][k]);
+        if (n == 0 || n > 127) break;
+        if (noteCount[n] > 0 && --noteCount[n] == 0) MIDI.sendNoteOff(n, 0, btnChan[i]);   // dernier bouton à la tenir
+      }
     }
   }
 }
